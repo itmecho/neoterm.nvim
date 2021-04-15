@@ -2,13 +2,25 @@ local winh = nil
 local bufh = nil
 local chan = nil
 local last_command = nil
+local prev_winh = nil
+
+local function win_is_open()
+    return winh ~= nil and vim.api.nvim_win_is_valid(winh)
+end
+
+local function buf_is_valid()
+    return bufh ~= nil and vim.api.nvim_buf_is_valid(bufh)
+end
 
 local function create_window()
+    local curr = vim.api.nvim_get_current_win()
     vim.cmd("vsplit")
     winh = vim.api.nvim_get_current_win()
+    vim.api.nvim_set_current_win(curr)
 end
 
 local function create_buffer()
+    local curr = vim.api.nvim_get_current_win()
     bufh = vim.api.nvim_create_buf(false, true)
     vim.api.nvim_win_set_buf(winh, bufh)
     vim.api.nvim_set_current_win(winh)
@@ -16,18 +28,18 @@ local function create_buffer()
     vim.cmd("norm G")
     vim.api.nvim_buf_set_name(bufh, "vterm")
     chan = vim.b.terminal_job_id
+    vim.api.nvim_set_current_win(curr)
 end
 
 local function toggle()
-    local curr = vim.api.nvim_get_current_win()
     local link_buf = false
-    if winh ~= nil and vim.api.nvim_win_is_valid(winh) then
+    if win_is_open() then
         vim.api.nvim_win_close(winh, true)
     else
         create_window()
         link_buf = true
     end
-    if bufh == nil or vim.api.nvim_buf_is_valid(bufh) == false then
+    if buf_is_valid() == false then
         create_buffer()
         link_buf = true
     end
@@ -35,17 +47,15 @@ local function toggle()
     if link_buf then
         vim.api.nvim_win_set_buf(winh, bufh)
     end
-
-    vim.api.nvim_set_current_win(curr)
 end
 
 -- Closes the window and deletes the buffer. This entirely resets the term state
-local function close()
-    if winh ~= nil and vim.api.nvim_win_is_valid(winh) then
+local function exit()
+    if win_is_open() then
         vim.api.nvim_win_close(winh, true)
         winh = nil
     end
-    if bufh ~= nil and vim.api.nvim_buf_is_valid(bufh) then
+    if buf_is_valid() then
         vim.api.nvim_buf_delete(bufh, {force = true})
         bufh = nil
     end
@@ -53,7 +63,7 @@ local function close()
 end
 
 local function run(cmd)
-    if vim.api.nvim_win_is_valid(winh) == false or chan == nil then
+    if win_is_open() == false or chan == nil then
         toggle()
     end
 
@@ -73,15 +83,31 @@ local function rerun()
     run(last_command)
 end
 
-local function go_to_terminal()
-    vim.api.nvim_set_current_win(winh)
-    vim.cmd("startinsert")
+local function interactive()
+    if win_is_open() == false then
+        toggle()
+    end
+
+    if vim.api.nvim_get_current_win() == winh then
+        -- we're in the vterm window
+        if prev_winh == nil then
+            print("Can't jump back to previous window")
+        else
+            local esc = vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, true, true)
+            vim.api.nvim_feedkeys(esc, "i", true)
+            vim.api.nvim_set_current_win(prev_winh)
+        end
+    else
+        prev_winh = vim.api.nvim_get_current_win()
+        vim.api.nvim_set_current_win(winh)
+        vim.cmd("startinsert")
+    end
 end
 
 return {
     toggle = toggle,
-    close = close,
+    interactive = interactive,
+    exit = exit,
     run = run,
-    rerun = rerun,
-    go_to_terminal = go_to_terminal
+    rerun = rerun
 }
