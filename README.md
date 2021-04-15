@@ -33,3 +33,17 @@ neoterm.run('ls')
 neoterm.rerun()
 neoterm.exit()
 ```
+
+# Example Keybindings
+
+```vim
+nnoremap <leader>tt <cmd>NeotermInteractive<CR>
+nnoremap <leader>T  <cmd>NeotermToggle<CR>
+nnoremap <leader>tR :NeotermRun<space>
+nnoremap <leader>tr <cmd>NeotermRerun<CR>
+nnoremap <leader>tx <cmd>NeotermExit<CR>
+tnoremap <leader>tn <C-\\><C-n>
+tnoremap <leader>tt <cmd>NeotermInteractive<CR>
+tnoremap <leader>T  <cmd>NeotermToggle<CR>
+tnoremap <leader>tx <cmd>NeotermExit<CR>
+```
