@@ -4,11 +4,7 @@ local chan = nil
 local last_command = nil
 
 local function create_window()
-    if vim.g.vterm_split == "horizontal" then
-        vim.cmd("split")
-    else
-        vim.cmd("vsplit")
-    end
+    vim.cmd("vsplit")
     winh = vim.api.nvim_get_current_win()
 end
 
@@ -17,11 +13,9 @@ local function create_buffer()
     vim.api.nvim_win_set_buf(winh, bufh)
     vim.api.nvim_set_current_win(winh)
     vim.cmd("term")
-    for _, c in ipairs(vim.api.nvim_list_chans()) do
-        if c.buffer == bufh then
-            chan = c
-        end
-    end
+    vim.cmd("norm G")
+    vim.api.nvim_buf_set_name(bufh, "vterm")
+    chan = vim.b.terminal_job_id
 end
 
 local function toggle()
@@ -58,21 +52,36 @@ local function close()
     chan = nil
 end
 
-local function send_command(cmd)
+local function run(cmd)
     if vim.api.nvim_win_is_valid(winh) == false or chan == nil then
         toggle()
     end
+
+    if last_command ~= nil then
+        -- Send <C-c> to make sure any on-going commands like log tails are stopped before running the new command
+        vim.api.nvim_chan_send(chan, "\003")
+    end
     last_command = cmd
-    vim.api.nvim_chan_send(chan.id, cmd .. "\n")
+    vim.api.nvim_chan_send(chan, cmd .. "\n")
 end
 
-local function rerun_command()
-    send_command(last_command)
+-- Runs the last command again
+local function rerun()
+    if last_command == nil then
+        print("Last command empty")
+    end
+    run(last_command)
+end
+
+local function go_to_terminal()
+    vim.api.nvim_set_current_win(winh)
+    vim.cmd("startinsert")
 end
 
 return {
     toggle = toggle,
     close = close,
-    send_command = send_command,
-    rerun_command = rerun_command
+    run = run,
+    rerun = rerun,
+    go_to_terminal = go_to_terminal
 }
