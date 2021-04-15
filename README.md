@@ -2,6 +2,8 @@
 
 Simple neovim terminal plugin written in lua
 
+https://user-images.githubusercontent.com/8384983/114889625-2ef71500-9e02-11eb-91e9-511d189c69d6.mp4
+
 # Usage
 
 Neoterm provides both vim commands as well as a lua API
