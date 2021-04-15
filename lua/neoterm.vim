@@ -26,7 +26,7 @@ local function create_buffer()
     vim.api.nvim_set_current_win(winh)
     vim.cmd("term")
     vim.cmd("norm G")
-    vim.api.nvim_buf_set_name(bufh, "vterm")
+    vim.api.nvim_buf_set_name(bufh, "neoterm")
     chan = vim.b.terminal_job_id
     vim.api.nvim_set_current_win(curr)
 end
@@ -89,7 +89,7 @@ local function interactive()
     end
 
     if vim.api.nvim_get_current_win() == winh then
-        -- we're in the vterm window
+        -- we're in the neoterm window
         if prev_winh == nil then
             print("Can't jump back to previous window")
         else

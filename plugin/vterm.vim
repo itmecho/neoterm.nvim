@@ -1,5 +1,0 @@
-command! -bang          VtermToggle      call vterm#toggle()
-command! -bang          VtermInteractive call vterm#interactive()
-command! -bang -nargs=+ VtermRun         call vterm#run('<args>')
-command! -bang          VtermRerun       call vterm#rerun()
-command! -bang          VtermExit        call vterm#exit()

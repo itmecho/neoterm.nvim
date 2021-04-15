@@ -1,0 +1,5 @@
+command! -bang          NeotermToggle      call neoterm#toggle()
+command! -bang          NeotermInteractive call neoterm#interactive()
+command! -bang -nargs=+ NeotermRun         call neoterm#run('<args>')
+command! -bang          NeotermRerun       call neoterm#rerun()
+command! -bang          NeotermExit        call neoterm#exit()
