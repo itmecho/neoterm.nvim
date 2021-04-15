@@ -1,0 +1,40 @@
+neoterm.txt	bufterm change: April 15 2021
+NEOTERM - TABLE OF CONTENTS                                          *neoterm*
+==============================================================================
+
+  Installation
+  Commands
+
+==============================================================================
+Installation                                            *neoterm-installation*
+
+<Install with packer>______________________________________________________~
+
+>
+    use 'itmecho/neoterm.nvim'
+<
+
+<Install with vim-plug>______________________________________________________~
+
+>
+    Plug 'itmecho/bufterm.nvim'
+<
+
+==============================================================================
+Commands                                                    *neoterm-commands*
+
+:NeotermToggle                                                 *NeotermToggle*
+  Toggle the neoterm window.
+
+:NeotermInteractive                                       *NeotermInteractive*
+  Jump to insert mode in the the neoterm window.
+  If it doesn't exist, it will be created.
+
+:NeotermRun {args}                                                *NeotermRun*
+  Run the given command in the neoterm window.
+
+:NeotermRerun                                                   *NeotermRerun*
+  Run the previous command again.
+
+:NeotermExit                                                     *NeotermExit*
+  Close the neoterm window and delete the terminal buffer.
