@@ -2,16 +2,18 @@ local winh = nil
 local bufh = nil
 local chan = nil
 local last_command = nil
-local prev_winh = nil
 
+-- Returns a bool to show if the neoterm window exists
 local function win_is_open()
     return winh ~= nil and vim.api.nvim_win_is_valid(winh)
 end
 
+-- returns a bool to show if the buf exists
 local function buf_is_valid()
     return bufh ~= nil and vim.api.nvim_buf_is_valid(bufh)
 end
 
+-- Creates the neoterm window and return the user to the window where the call was made
 local function create_window()
     local curr = vim.api.nvim_get_current_win()
     vim.cmd("vsplit")
@@ -19,6 +21,7 @@ local function create_window()
     vim.api.nvim_set_current_win(curr)
 end
 
+-- Creates the neoterm buffer and starts the terminal
 local function create_buffer()
     local curr = vim.api.nvim_get_current_win()
     bufh = vim.api.nvim_create_buf(false, true)
@@ -31,10 +34,18 @@ local function create_buffer()
     vim.api.nvim_set_current_win(curr)
 end
 
-local function toggle()
+local M = {}
+
+-- Toggles the neoterm window.
+--
+-- If the window doesn't exist it is created. If it already exists, it is closed
+-- If the buffer doesn't exist is is created and set as the active buffer in the neoterm window
+-- If either the window of buffer were created, the window buffer is set to the neoterm buffer
+M.toggle = function()
     local link_buf = false
     if win_is_open() then
         vim.api.nvim_win_close(winh, true)
+        winh = nil
     else
         create_window()
         link_buf = true
@@ -50,7 +61,7 @@ local function toggle()
 end
 
 -- Closes the window and deletes the buffer. This entirely resets the term state
-local function exit()
+M.exit = function()
     if win_is_open() then
         vim.api.nvim_win_close(winh, true)
         winh = nil
@@ -62,9 +73,10 @@ local function exit()
     chan = nil
 end
 
-local function run(cmd)
+-- Takes a command as a string and runs it in the neoterm buffer. If the window is closed, it will be toggled
+M.run = function(cmd)
     if win_is_open() == false or chan == nil then
-        toggle()
+        M.toggle()
     end
 
     if last_command ~= nil then
@@ -76,38 +88,26 @@ local function run(cmd)
 end
 
 -- Runs the last command again
-local function rerun()
+M.rerun = function()
     if last_command == nil then
         print("Last command empty")
     end
-    run(last_command)
+    M.run(last_command)
 end
 
-local function interactive()
+-- Jumps to the neoterm window and enters insert mode. If called from the neoterm window, it will jump back to the
+-- previous window
+M.interactive = function()
     if win_is_open() == false then
-        toggle()
+        M.toggle()
     end
 
     if vim.api.nvim_get_current_win() == winh then
-        -- we're in the neoterm window
-        if prev_winh == nil then
-            print("Can't jump back to previous window")
-        else
-            local esc = vim.api.nvim_replace_termcodes("<C-\\><C-n>", true, true, true)
-            vim.api.nvim_feedkeys(esc, "i", true)
-            vim.api.nvim_set_current_win(prev_winh)
-        end
+        vim.cmd("wincmd w")
     else
-        prev_winh = vim.api.nvim_get_current_win()
         vim.api.nvim_set_current_win(winh)
         vim.cmd("startinsert")
     end
 end
 
-return {
-    toggle = toggle,
-    interactive = interactive,
-    exit = exit,
-    run = run,
-    rerun = rerun
-}
+return M
