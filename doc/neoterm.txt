@@ -7,12 +7,14 @@ CONTENTS                                                             *neoterm*
 ==============================================================================
 Section 1: Commands                                          *neoterm-commands*
 
+:NeotermOpen                                                    *NeotermToggle*
+    Open the neoterm window.
+
+:NeotermClose                                                   *NeotermToggle*
+    Close the neoterm window.
+
 :NeotermToggle                                                  *NeotermToggle*
     Toggle the neoterm window.
-
-:NeotermInteractive                                        *NeotermInteractive*
-    Jump to insert mode in the the neoterm window.
-    If it doesn't exist, it will be created.
 
 :NeotermRun {args}                                                 *NeotermRun*
     Run the given command in the neoterm window.

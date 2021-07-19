@@ -1,113 +1,129 @@
-local winh = nil
-local bufh = nil
-local chan = nil
-local last_command = nil
+local state = {
+    winh = nil,
+    bufh = nil,
+    chan = nil,
+    last_command = nil
+}
+
+local config = {
+    mode = "vertical"
+}
 
 -- Returns a bool to show if the neoterm window exists
 local function win_is_open()
-    return winh ~= nil and vim.api.nvim_win_is_valid(winh)
+    return state.winh ~= nil and vim.api.nvim_win_is_valid(state.winh) == true
 end
 
 -- returns a bool to show if the buf exists
 local function buf_is_valid()
-    return bufh ~= nil and vim.api.nvim_buf_is_valid(bufh)
+    return state.bufh ~= nil and vim.api.nvim_buf_is_valid(state.bufh) == true
 end
 
--- Creates the neoterm window and return the user to the window where the call was made
-local function create_window()
-    local curr = vim.api.nvim_get_current_win()
-    vim.cmd("vsplit")
-    winh = vim.api.nvim_get_current_win()
-    vim.api.nvim_set_current_win(curr)
+local neoterm = {}
+
+-- Sets global configuration
+-- Options:
+--	mode - set how the terminal window will be displayed
+--		* vertical
+--		* horizonal
+--		* fullscreen
+function neoterm.setup(opts)
+    config.mode = opts.mode or config.mode
 end
 
--- Creates the neoterm buffer and starts the terminal
-local function create_buffer()
-    local curr = vim.api.nvim_get_current_win()
-    bufh = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_win_set_buf(winh, bufh)
-    vim.api.nvim_set_current_win(winh)
-    vim.cmd("term")
-    vim.cmd("norm G")
-    vim.api.nvim_buf_set_name(bufh, "neoterm")
-    chan = vim.b.terminal_job_id
-    vim.api.nvim_set_current_win(curr)
-end
+-- Opens the terminal window. If it was opened previously, the same terminal buffer will be used
+-- Options:
+--	mode - override the global config mode
+--	noinsert - don't enter insert mode after switching to the neoterm window
+function neoterm.open(opts)
+    opts = opts or {}
 
-local M = {}
-
--- Toggles the neoterm window.
---
--- If the window doesn't exist it is created. If it already exists, it is closed
--- If the buffer doesn't exist is is created and set as the active buffer in the neoterm window
--- If either the window of buffer were created, the window buffer is set to the neoterm buffer
-M.toggle = function()
-    local link_buf = false
-    if win_is_open() then
-        vim.api.nvim_win_close(winh, true)
-        winh = nil
-    else
-        create_window()
-        link_buf = true
-    end
+    local buf_created = false
     if buf_is_valid() == false then
-        create_buffer()
-        link_buf = true
+        state.bufh = vim.api.nvim_create_buf(true, true)
+        buf_created = true
     end
 
-    if link_buf then
-        vim.api.nvim_win_set_buf(winh, bufh)
+    if win_is_open() ~= true then
+        local ui = vim.api.nvim_list_uis()[1]
+
+        local mode = opts.mode or config.mode
+
+        local winopts = {
+            relative = "editor",
+            width = math.floor(ui.width / 2),
+            height = ui.height - vim.o.cmdheight - 3,
+            row = 1,
+            col = ui.width,
+            style = "minimal",
+            border = "single"
+        }
+        if mode == "horizontal" then
+            winopts.width = ui.width
+            winopts.height = math.floor((ui.height - vim.o.cmdheight - 2) / 3)
+            winopts.row = (2 * winopts.height)
+            winopts.col = 1
+        elseif mode == "fullscreen" then
+            winopts.width = ui.width
+            winopts.col = 1
+        end
+
+        state.winh = vim.api.nvim_open_win(state.bufh, true, winopts)
+
+        if buf_created then
+            vim.cmd [[term]]
+            state.chan = vim.b.terminal_job_id
+        end
+    end
+
+    if opts.noinsert == false then
+        vim.cmd [[startinsert]]
+    end
+    vim.api.nvim_buf_set_name(state.bufh, "neoterm")
+end
+
+function neoterm.close()
+    vim.api.nvim_win_close(state.winh, false)
+    state.winh = nil
+end
+
+function neoterm.toggle()
+    if win_is_open() then
+        neoterm.close()
+    else
+        neoterm.open()
     end
 end
 
--- Closes the window and deletes the buffer. This entirely resets the term state
-M.exit = function()
-    if win_is_open() then
-        vim.api.nvim_win_close(winh, true)
-        winh = nil
-    end
-    if buf_is_valid() then
-        vim.api.nvim_buf_delete(bufh, {force = true})
-        bufh = nil
-    end
-    chan = nil
+function neoterm.exit()
+    neoterm.close()
+
+    vim.api.nvim_chan_send(state.chan, "exit\n")
+    state.chan = nil
+
+    vim.api.nvim_buf_delete(state.bufh, {force = true})
+    state.bufh = nil
 end
 
 -- Takes a command as a string and runs it in the neoterm buffer. If the window is closed, it will be toggled
-M.run = function(cmd)
-    if win_is_open() == false or chan == nil then
-        M.toggle()
+function neoterm.run(command)
+    if win_is_open() == false or state.chan == nil then
+        neoterm.open()
     end
 
-    if last_command ~= nil then
+    if state.last_command ~= nil then
         -- Send <C-c> to make sure any on-going commands like log tails are stopped before running the new command
-        vim.api.nvim_chan_send(chan, "\003")
+        vim.api.nvim_chan_send(state.chan, "\003")
     end
-    last_command = cmd
-    vim.api.nvim_chan_send(chan, cmd .. "\n")
+    state.last_command = command
+    vim.api.nvim_chan_send(state.chan, command .. "\n")
 end
 
--- Runs the last command again
-M.rerun = function()
-    if last_command == nil then
+function neoterm.rerun()
+    if state.last_command == nil then
         print("Last command empty")
     end
-    M.run(last_command)
+    neoterm.run(state.last_command)
 end
 
--- Jumps to the neoterm window and enters insert mode. If called from the neoterm window, it will jump back to the
--- previous window
-M.interactive = function()
-    if win_is_open() == false then
-        M.toggle()
-    end
-
-    if vim.api.nvim_get_current_win() == winh then
-        vim.cmd("wincmd w")
-    else
-        vim.api.nvim_set_current_win(winh)
-        vim.cmd("startinsert")
-    end
-end
-
-return M
+return neoterm

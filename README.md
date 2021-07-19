@@ -1,8 +1,6 @@
 # Neoterm
 
-Simple neovim terminal plugin written in lua
-
-https://user-images.githubusercontent.com/8384983/114889625-2ef71500-9e02-11eb-91e9-511d189c69d6.mp4
+Simple neovim terminal plugin written in lua. Terminal runs in a floating window in a configurable position.
 
 # Usage
 
@@ -14,8 +12,9 @@ Neoterm provides the following commands
 
 | Command              | Description                                                                            |
 | -------------------- | -------------------------------------------------------------------------------------- |
+| `NeotermOpen`      | Open the neoterm window                                                              |
+| `NeotermClose`      | Close the neoterm window                                                              |
 | `NeotermToggle`      | Toggle the neoterm window                                                              |
-| `NeotermInteractive` | Jump to insert mode in the the neoterm window. If it doesn't exist, it will be created |
 | `NeotermRun <args>`  | Run the given command in the neoterm window                                            |
 | `NeotermRerun`       | Run the previous command again                                                         |
 | `NeotermExit`        | Close the neoterm window and delete the terminal buffer                                |
@@ -25,10 +24,19 @@ Neoterm provides the following commands
 The following functions are available on the neoterm module. They map directly to the commands above
 
 ```lua
+-- Setup global config
+require('neoterm').setup({
+	mode = 'vertical' -- vertical/horizontal/fullscreen
+})
+
+
 local neoterm = require('neoterm')
 
+neoterm.open()
+-- Override global config on a specific open call
+neoterm.open({ mode = 'horizontal', noinsert = true})
+neoterm.close()
 neoterm.toggle()
-neoterm.interactive()
 neoterm.run('ls')
 neoterm.rerun()
 neoterm.exit()
@@ -37,13 +45,11 @@ neoterm.exit()
 # Example Keybindings
 
 ```vim
-nnoremap <leader>tt <cmd>NeotermInteractive<CR>
-nnoremap <leader>T  <cmd>NeotermToggle<CR>
-nnoremap <leader>tR :NeotermRun<space>
-nnoremap <leader>tr <cmd>NeotermRerun<CR>
+nnoremap <leader>tt <cmd>NeotermToggle<CR>
+nnoremap <leader>tr :NeotermRun<space>
+nnoremap <leader>tR <cmd>NeotermRerun<CR>
 nnoremap <leader>tx <cmd>NeotermExit<CR>
 tnoremap <leader>tn <C-\\><C-n>
-tnoremap <leader>tt <cmd>NeotermInteractive<CR>
-tnoremap <leader>T  <cmd>NeotermToggle<CR>
+tnoremap <leader>tt <cmd>NeotermToggle<CR>
 tnoremap <leader>tx <cmd>NeotermExit<CR>
 ```

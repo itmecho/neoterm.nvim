@@ -1,9 +1,13 @@
-function! neoterm#toggle()
-    lua require('neoterm').toggle()
+function! neoterm#open()
+    lua require('neoterm').open()
 endfunction
 
-function! neoterm#interactive()
-    lua require('neoterm').interactive()
+function! neoterm#close()
+    lua require('neoterm').close()
+endfunction
+
+function! neoterm#toggle()
+    lua require('neoterm').toggle()
 endfunction
 
 function! neoterm#run(cmd)
