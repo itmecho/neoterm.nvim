@@ -6,7 +6,8 @@ local state = {
 }
 
 local config = {
-    mode = "vertical"
+    mode = "vertical",
+    noinsert = false
 }
 
 -- Returns a bool to show if the neoterm window exists
@@ -27,8 +28,10 @@ local neoterm = {}
 --		* vertical
 --		* horizonal
 --		* fullscreen
+--	noinsert - don't enter insert mode when switching to the neoterm window
 function neoterm.setup(opts)
     config.mode = opts.mode or config.mode
+    config.noinsert = opts.noinsert or config.noinsert
 end
 
 -- Opens the terminal window. If it was opened previously, the same terminal buffer will be used
@@ -53,7 +56,7 @@ function neoterm.open(opts)
             relative = "editor",
             width = math.floor(ui.width / 2),
             height = ui.height - vim.o.cmdheight - 3,
-            row = 1,
+            row = 0,
             col = ui.width,
             style = "minimal",
             border = "single"
@@ -76,7 +79,12 @@ function neoterm.open(opts)
         end
     end
 
-    if opts.noinsert == false then
+    local noinsert = config.noinsert
+    if opts.noinsert ~= nil then
+        noinsert = opts.noinsert
+    end
+
+    if noinsert == false then
         vim.cmd [[startinsert]]
     end
     vim.api.nvim_buf_set_name(state.bufh, "neoterm")
