@@ -2,8 +2,6 @@
 
 Simple neovim terminal plugin written in lua. Terminal runs in a floating window in a configurable position.
 
-
-
 # Usage
 
 Neoterm provides both vim commands as well as a lua API
@@ -28,8 +26,9 @@ The following functions are available on the neoterm module. They map directly t
 ```lua
 -- Setup global config
 require('neoterm').setup({
-	mode = 'vertical', -- vertical/horizontal/fullscreen
-	noinsert = false   -- disable entering insert mode when opening the neoterm window
+	clear_on_run = true, -- run clear command before user specified commands
+	mode = 'vertical',   -- vertical/horizontal/fullscreen
+	noinsert = false     -- disable entering insert mode when opening the neoterm window
 })
 
 
@@ -41,6 +40,8 @@ neoterm.open({ mode = 'horizontal', noinsert = true})
 neoterm.close()
 neoterm.toggle()
 neoterm.run('ls')
+-- Control whether or not the screen is cleared before running the command
+neoterm.run('ls', {clear = false})
 neoterm.rerun()
 neoterm.exit()
 ```

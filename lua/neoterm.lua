@@ -6,6 +6,7 @@ local state = {
 }
 
 local config = {
+    clear_on_run = true,
     mode = "vertical",
     noinsert = false
 }
@@ -24,6 +25,7 @@ local neoterm = {}
 
 -- Sets global configuration
 -- Options:
+--	clear_on_run - send the clear comand before running a command with run or rerun
 --	mode - set how the terminal window will be displayed
 --		* vertical
 --		* horizonal
@@ -114,7 +116,15 @@ function neoterm.exit()
 end
 
 -- Takes a command as a string and runs it in the neoterm buffer. If the window is closed, it will be toggled
-function neoterm.run(command)
+-- Options:
+--	clear - send clear command before running the given command
+function neoterm.run(command, opts)
+    opts =
+        opts or
+        {
+            clear = config.clear_on_run
+        }
+
     if win_is_open() == false or state.chan == nil then
         neoterm.open()
     end
@@ -124,6 +134,10 @@ function neoterm.run(command)
         vim.api.nvim_chan_send(state.chan, "\003\n")
     end
     state.last_command = command
+
+    if opts.clear then
+        vim.api.nvim_chan_send(state.chan, "clear\n")
+    end
     vim.api.nvim_chan_send(state.chan, command .. "\n")
 end
 
