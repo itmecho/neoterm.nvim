@@ -121,7 +121,7 @@ function neoterm.run(command)
 
     if state.last_command ~= nil then
         -- Send <C-c> to make sure any on-going commands like log tails are stopped before running the new command
-        vim.api.nvim_chan_send(state.chan, "\003")
+        vim.api.nvim_chan_send(state.chan, "\003\n")
     end
     state.last_command = command
     vim.api.nvim_chan_send(state.chan, command .. "\n")
