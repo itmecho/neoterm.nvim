@@ -45,7 +45,7 @@ function neoterm.open(opts)
 
     local buf_created = false
     if buf_is_valid() == false then
-        state.bufh = vim.api.nvim_create_buf(true, true)
+        state.bufh = vim.api.nvim_create_buf(false, true)
         buf_created = true
     end
 
@@ -78,6 +78,8 @@ function neoterm.open(opts)
         if buf_created then
             vim.cmd [[term]]
             state.chan = vim.b.terminal_job_id
+            vim.api.nvim_buf_set_name(state.bufh, "neoterm")
+            vim.api.nvim_buf_set_option(state.bufh, "buflisted", false)
         end
     end
 
@@ -89,7 +91,6 @@ function neoterm.open(opts)
     if noinsert == false then
         vim.cmd [[startinsert]]
     end
-    vim.api.nvim_buf_set_name(state.bufh, "neoterm")
 end
 
 function neoterm.close()
