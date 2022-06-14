@@ -2,6 +2,8 @@
 
 Simple neovim terminal plugin written in lua. Terminal runs in a floating window in a configurable position.
 
+Requires `neovim` 0.7+ for access to the lua autocmd API.
+
 # Usage
 
 Neoterm provides both vim commands as well as a lua API
