@@ -1,28 +1,56 @@
-*neoterm.txt*                                       Last change: 2021 April 15
+*neoterm.txt*                                         Last change: 2022 June 14
 ==============================================================================
-CONTENTS                                                             *neoterm*
+CONTENTS                                                              *neoterm*
 
   1. Commands ....... |neoterm-commands|
+  2. Events ......... |neoterm-events|
 
 ==============================================================================
 Section 1: Commands                                          *neoterm-commands*
 
-:NeotermOpen                                                    *NeotermToggle*
+                                                                  *NeotermOpen*
+:NeotermOpen
     Open the neoterm window.
 
-:NeotermClose                                                   *NeotermToggle*
+                                                                 *NeotermClose*
+:NeotermClose
     Close the neoterm window.
 
-:NeotermToggle                                                  *NeotermToggle*
+                                                                *NeotermToggle*
+:NeotermToggle
     Toggle the neoterm window.
 
-:NeotermRun {args}                                                 *NeotermRun*
+                                                                   *NeotermRun*
+:NeotermRun {args}
     Run the given command in the neoterm window.
 
-:NeotermRerun                                                    *NeotermRerun*
+                                                                 *NeotermRerun*
+:NeotermRerun
     Run the previous command again.
 
-:NeotermExit                                                      *NeotermExit*
+                                                                  *NeotermExit*
+:NeotermExit
     Close the neoterm window and delete the terminal buffer.
+
+==============================================================================
+Section 2: Events                                              *neoterm-events*
+
+The following events can be used to add custom behaviour around neoterm.
+
+                                                               *NeotermWinOpen*
+NeotermWinOpen
+    Fired when the neoterm window is opened.
+
+                                                              *NeotermWinClose*
+NeotermWinClose
+    Fired when the neoterm window is opened.
+
+                                                             *NeotermTermEnter*
+NeotermTermEnter
+    Fired when the entering Terminal Mode in the Neoterm buffer.
+
+                                                             *NeotermTermLeave*
+NeotermTermLeave
+    Fired when the leaving Terminal Mode in the Neoterm buffer.
 
 vim:textwidth=78:tabstop=4:expandtab:shiftwidth=4:filetype=help:
