@@ -3,6 +3,7 @@ local state = {
   bufh = nil,
   chan = nil,
   last_command = nil,
+  last_mode = nil,
 }
 
 local config = {
@@ -79,6 +80,8 @@ function neoterm.open(opts)
       winopts.col = 1
     end
 
+    state.last_mode = mode
+
     state.winh = vim.api.nvim_open_win(state.bufh, true, winopts)
     fire_event("NeotermWinOpen")
     vim.api.nvim_create_autocmd("WinClosed", {
@@ -123,6 +126,14 @@ function neoterm.open(opts)
     end,
     group = group,
   })
+
+  vim.api.nvim_create_autocmd("TermClose", {
+    buffer = state.bufh,
+    callback = function()
+      state.last_mode = nil
+    end,
+    group = group,
+  })
 end
 
 function neoterm.close()
@@ -134,7 +145,7 @@ function neoterm.toggle()
   if win_is_open() then
     neoterm.close()
   else
-    neoterm.open()
+    neoterm.open({ mode = state.last_mode })
   end
 end
 
@@ -146,6 +157,8 @@ function neoterm.exit()
 
   vim.api.nvim_buf_delete(state.bufh, { force = true })
   state.bufh = nil
+
+  state.last_mode = nil
 
   fire_event("NeotermExit")
 end
