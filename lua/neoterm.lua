@@ -70,7 +70,7 @@ function neoterm.open(opts)
       border = "single",
     }
 
-    local wo = config.winopts
+    local wo = opts.winopts or config.winopts
     local mode = wo and "custom" or opts.mode or config.mode
     if wo then
       wo = type(wo) == "function" and wo() or wo
