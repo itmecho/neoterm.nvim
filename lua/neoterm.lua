@@ -88,8 +88,6 @@ function neoterm.open(opts)
     end
 
     state.last_mode = mode
-    print(state.last_mode)
-
     state.winh = vim.api.nvim_open_win(state.bufh, true, winopts)
 
     local wh = config.winhighlight
