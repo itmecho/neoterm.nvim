@@ -187,7 +187,7 @@ function neoterm.run(command, opts)
   }
 
   if win_is_open() == false or state.chan == nil then
-    neoterm.open()
+    neoterm.open(opts)
   end
 
   if state.last_command ~= nil then
