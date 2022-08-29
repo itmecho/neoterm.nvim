@@ -39,6 +39,8 @@ local neoterm = {}
 function neoterm.setup(opts)
   config.mode = opts.mode or config.mode
   config.noinsert = opts.noinsert or config.noinsert
+  config.winopts = opts.winopts
+  config.winhighlight = opts.winhighlight
 end
 
 -- Opens the terminal window. If it was opened previously, the same terminal buffer will be used
@@ -58,9 +60,6 @@ function neoterm.open(opts)
 
   if win_is_open() ~= true then
     local ui = vim.api.nvim_list_uis()[1]
-
-    local mode = opts.mode or config.mode
-
     local winopts = {
       relative = "editor",
       width = math.floor(ui.width / 2),
@@ -70,7 +69,15 @@ function neoterm.open(opts)
       style = "minimal",
       border = "single",
     }
-    if mode == "horizontal" then
+
+    local wo = config.winopts
+    local mode = wo and "custom" or opts.mode or config.mode
+    if wo then
+      wo = type(wo) == "function" and wo() or wo
+      if type(wo) == "table" then
+        winopts = vim.tbl_extend("keep", wo, winopts)
+      end
+    elseif mode == "horizontal" then
       winopts.width = ui.width
       winopts.height = math.floor((ui.height - vim.o.cmdheight - 2) / 3)
       winopts.row = (2 * winopts.height)
@@ -81,8 +88,16 @@ function neoterm.open(opts)
     end
 
     state.last_mode = mode
+    print(state.last_mode)
 
     state.winh = vim.api.nvim_open_win(state.bufh, true, winopts)
+
+    local wh = config.winhighlight
+    if wh then
+      wh = type(wh) == "function" and wh() or wh
+      vim.api.nvim_win_set_option(state.winh, "winhighlight", wh)
+    end
+
     fire_event("NeotermWinOpen")
     vim.api.nvim_create_autocmd("WinClosed", {
       pattern = string.format("%d", state.winh),
