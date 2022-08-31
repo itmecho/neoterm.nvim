@@ -90,7 +90,7 @@ function neoterm.open(opts)
     state.last_mode = mode
     state.winh = vim.api.nvim_open_win(state.bufh, true, winopts)
 
-    local wh = config.winhighlight
+    local wh = opts.winhighlight or config.winhighlight
     if wh then
       wh = type(wh) == "function" and wh() or wh
       vim.api.nvim_win_set_option(state.winh, "winhighlight", wh)
