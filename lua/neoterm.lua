@@ -10,6 +10,7 @@ local config = {
   clear_on_run = true,
   mode = "vertical",
   noinsert = false,
+  width = 1 / 2,
 }
 
 -- Returns a bool to show if the neoterm window exists
@@ -39,6 +40,7 @@ local neoterm = {}
 function neoterm.setup(opts)
   config.mode = opts.mode or config.mode
   config.noinsert = opts.noinsert or config.noinsert
+  config.width = opts.width or config.width
 end
 
 -- Opens the terminal window. If it was opened previously, the same terminal buffer will be used
@@ -60,10 +62,11 @@ function neoterm.open(opts)
     local ui = vim.api.nvim_list_uis()[1]
 
     local mode = opts.mode or config.mode
+    local width = opts.width or config.width
 
     local winopts = {
       relative = "editor",
-      width = math.floor(ui.width / 2),
+      width = math.floor(ui.width * width),
       height = ui.height - vim.o.cmdheight - 3,
       row = 0,
       col = ui.width,
