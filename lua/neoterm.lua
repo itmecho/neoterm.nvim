@@ -10,6 +10,8 @@ local config = {
   clear_on_run = true,
   mode = "vertical",
   noinsert = false,
+  width = 1 / 2,
+  height = 1 / 3
 }
 
 -- Returns a bool to show if the neoterm window exists
@@ -36,15 +38,21 @@ local neoterm = {}
 --		* horizonal
 --		* fullscreen
 --	noinsert - don't enter insert mode when switching to the neoterm window
+--| width - set the width of the terminal window
+--| height - set the height of the terminal window
 function neoterm.setup(opts)
   config.mode = opts.mode or config.mode
   config.noinsert = opts.noinsert or config.noinsert
+  config.width = opts.width or config.width
+  config.height = opts.height or config.height
 end
 
 -- Opens the terminal window. If it was opened previously, the same terminal buffer will be used
 -- Options:
 --	mode - override the global config mode
 --	noinsert - don't enter insert mode after switching to the neoterm window
+--	width - override the global config width
+--	height - override the global config height
 function neoterm.open(opts)
   opts = opts or {}
 
@@ -60,10 +68,12 @@ function neoterm.open(opts)
     local ui = vim.api.nvim_list_uis()[1]
 
     local mode = opts.mode or config.mode
+    local width = opts.width or config.width
+    local height = opts.height or config.height
 
     local winopts = {
       relative = "editor",
-      width = math.floor(ui.width / 2),
+      width = math.floor(ui.width * width),
       height = ui.height - vim.o.cmdheight - 3,
       row = 0,
       col = ui.width,
@@ -72,9 +82,9 @@ function neoterm.open(opts)
     }
     if mode == "horizontal" then
       winopts.width = ui.width
-      winopts.height = math.floor((ui.height - vim.o.cmdheight - 2) / 3)
-      winopts.row = (2 * winopts.height)
-      winopts.col = 1
+      winopts.height = math.floor(ui.height * height)
+      winopts.row = ui.height - winopts.height - vim.o.cmdheight - 2
+      winopts.col = 0
     elseif mode == "fullscreen" then
       winopts.width = ui.width
       winopts.col = 1
@@ -95,8 +105,8 @@ function neoterm.open(opts)
     if buf_created then
       vim.cmd([[term]])
       state.chan = vim.b.terminal_job_id
-      vim.api.nvim_buf_set_name(state.bufh, "neoterm")
-      vim.api.nvim_buf_set_option(state.bufh, "buflisted", false)
+      -- vim.api.nvim_buf_set_name(state.bufh, "neoterm")
+      vim.api.nvim_set_option_value('buflisted', false, { buf = state.bufh })
     end
   end
 
