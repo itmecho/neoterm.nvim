@@ -10,6 +10,7 @@ local config = {
   clear_on_run = true,
   mode = "vertical",
   noinsert = false,
+  width = 0.5,  -- Default width is 50%
 }
 
 -- Returns a bool to show if the neoterm window exists
@@ -36,15 +37,35 @@ local neoterm = {}
 --		* horizonal
 --		* fullscreen
 --	noinsert - don't enter insert mode when switching to the neoterm window
+--	width - set the width of the terminal window (percentage, ratio, or range between 0-1)
 function neoterm.setup(opts)
   config.mode = opts.mode or config.mode
   config.noinsert = opts.noinsert or config.noinsert
+  config.width = opts.width or config.width
+
+  -- Validate width
+  local width = config.width
+  if type(width) == "number" then
+    if width < 0 or width > 1 then
+      error("Invalid width value. Width must be between 0 and 1.")
+    end
+  elseif type(width) == "string" then
+    if not width:match("^%d+%%$") then
+      error("Invalid width value. Width must be a percentage string (e.g., '50%').")
+    end
+    width = tonumber(width:sub(1, -2)) / 100
+  else
+    error("Invalid width value. Width must be a number between 0 and 1 or a percentage string.")
+  end
+
+  config.width = width
 end
 
 -- Opens the terminal window. If it was opened previously, the same terminal buffer will be used
 -- Options:
 --	mode - override the global config mode
 --	noinsert - don't enter insert mode after switching to the neoterm window
+--	width - override the global config width
 function neoterm.open(opts)
   opts = opts or {}
 
@@ -60,10 +81,11 @@ function neoterm.open(opts)
     local ui = vim.api.nvim_list_uis()[1]
 
     local mode = opts.mode or config.mode
+    local width = opts.width or config.width
 
     local winopts = {
       relative = "editor",
-      width = math.floor(ui.width / 2),
+      width = math.floor(ui.width * width),
       height = ui.height - vim.o.cmdheight - 3,
       row = 0,
       col = ui.width,
