@@ -3,13 +3,15 @@ local state = {
   bufh = nil,
   chan = nil,
   last_command = nil,
-  last_mode = nil,
+  last_position = nil,
 }
 
 local config = {
   clear_on_run = true,
-  mode = "vertical",
+  position = "right",  -- Default position is right
   noinsert = false,
+  width = 0.5,  -- Default width is 50%
+  height = 1,  -- Default height is 100%
 }
 
 -- Returns a bool to show if the neoterm window exists
@@ -30,21 +32,63 @@ local neoterm = {}
 
 -- Sets global configuration
 -- Options:
---	clear_on_run - send the clear comand before running a command with run or rerun
---	mode - set how the terminal window will be displayed
---		* vertical
---		* horizonal
---		* fullscreen
+--	clear_on_run - send the clear command before running a command with run or rerun
+--	position - set where the terminal window will be displayed
+--		* full screen (0)
+--		* top (1)
+--		* right (2)
+--		* bottom (3)
+--		* left (4)
+--		* center (5)
 --	noinsert - don't enter insert mode when switching to the neoterm window
+--	width - set the width of the terminal window (percentage, ratio, or range between 0-1)
+--	height - set the height of the terminal window (percentage, ratio, or range between 0-1)
 function neoterm.setup(opts)
-  config.mode = opts.mode or config.mode
+  config.position = opts.position or config.position
   config.noinsert = opts.noinsert or config.noinsert
+  config.width = opts.width or config.width
+  config.height = opts.height or config.height
+
+  -- Validate and normalize width
+  local width = config.width
+  if type(width) == "number" then
+    if width < 0 or width > 1 then
+      error("Invalid width value. Width must be between 0 and 1.")
+    end
+  elseif type(width) == "string" then
+    if not width:match("^%d+%%$") then
+      error("Invalid width value. Width must be a percentage string (e.g., '50%').")
+    end
+    width = tonumber(width:sub(1, -2)) / 100
+  else
+    error("Invalid width value. Width must be a number between 0 and 1 or a percentage string.")
+  end
+
+  -- Validate and normalize height
+  local height = config.height
+  if type(height) == "number" then
+    if height < 0 or height > 1 then
+      error("Invalid height value. Height must be between 0 and 1.")
+    end
+  elseif type(height) == "string" then
+    if not height:match("^%d+%%$") then
+      error("Invalid height value. Height must be a percentage string (e.g., '50%').")
+    end
+    height = tonumber(height:sub(1, -2)) / 100
+  else
+    error("Invalid height value. Height must be a number between 0 and 1 or a percentage string.")
+  end
+
+  config.width = width
+  config.height = height
 end
 
 -- Opens the terminal window. If it was opened previously, the same terminal buffer will be used
 -- Options:
---	mode - override the global config mode
+--	position - override the global config position
 --	noinsert - don't enter insert mode after switching to the neoterm window
+--	width - override the global config width
+--	height - override the global config height
 function neoterm.open(opts)
   opts = opts or {}
 
@@ -59,28 +103,62 @@ function neoterm.open(opts)
   if win_is_open() ~= true then
     local ui = vim.api.nvim_list_uis()[1]
 
-    local mode = opts.mode or config.mode
+    local position = opts.position or config.position
+    local width = opts.width or config.width
+    local height = opts.height or config.height
 
     local winopts = {
       relative = "editor",
-      width = math.floor(ui.width / 2),
-      height = ui.height - vim.o.cmdheight - 3,
-      row = 0,
-      col = ui.width,
       style = "minimal",
       border = "single",
     }
-    if mode == "horizontal" then
-      winopts.width = ui.width
-      winopts.height = math.floor((ui.height - vim.o.cmdheight - 2) / 3)
-      winopts.row = (2 * winopts.height)
-      winopts.col = 1
-    elseif mode == "fullscreen" then
-      winopts.width = ui.width
-      winopts.col = 1
+
+    if type(position) == "string" then
+      position = ({
+        ["full screen"] = 0,
+        ["top"] = 1,
+        ["right"] = 2,
+        ["bottom"] = 3,
+        ["left"] = 4,
+        ["center"] = 5,
+      })[position]
     end
 
-    state.last_mode = mode
+    if position == 0 then  -- full screen
+      winopts.width = ui.width
+      winopts.height = ui.height - vim.o.cmdheight - 3
+      winopts.row = 0
+      winopts.col = 0
+    elseif position == 1 then  -- top
+      winopts.width = ui.width
+      winopts.height = math.floor(ui.height * height) - vim.o.cmdheight - 3
+      winopts.row = 0
+      winopts.col = 0
+    elseif position == 2 then  -- right
+      winopts.width = math.floor(ui.width * width)
+      winopts.height = ui.height - vim.o.cmdheight - 3
+      winopts.row = 0
+      winopts.col = ui.width - winopts.width
+    elseif position == 3 then  -- bottom
+      winopts.width = ui.width
+      winopts.height = math.floor(ui.height * height) - vim.o.cmdheight - 3
+      winopts.row = ui.height - winopts.height - vim.o.cmdheight - 3
+      winopts.col = 0
+    elseif position == 4 then  -- left
+      winopts.width = math.floor(ui.width * width)
+      winopts.height = ui.height - vim.o.cmdheight - 3
+      winopts.row = 0
+      winopts.col = 0
+    elseif position == 5 then  -- center
+      winopts.width = math.floor(ui.width * width)
+      winopts.height = math.floor(ui.height * height) - vim.o.cmdheight - 3
+      winopts.row = math.floor((ui.height - winopts.height) / 2)
+      winopts.col = math.floor((ui.width - winopts.width) / 2)
+    else
+      error("Invalid position value. Position must be one of: full screen, top, right, bottom, left, center.")
+    end
+
+    state.last_position = position
 
     state.winh = vim.api.nvim_open_win(state.bufh, true, winopts)
     fire_event("NeotermWinOpen")
@@ -130,7 +208,7 @@ function neoterm.open(opts)
   vim.api.nvim_create_autocmd("TermClose", {
     buffer = state.bufh,
     callback = function()
-      state.last_mode = nil
+      state.last_position = nil
     end,
     group = group,
   })
@@ -145,7 +223,7 @@ function neoterm.toggle()
   if win_is_open() then
     neoterm.close()
   else
-    neoterm.open({ mode = state.last_mode })
+    neoterm.open({ position = state.last_position })
   end
 end
 
@@ -158,7 +236,7 @@ function neoterm.exit()
   vim.api.nvim_buf_delete(state.bufh, { force = true })
   state.bufh = nil
 
-  state.last_mode = nil
+  state.last_position = nil
 
   fire_event("NeotermExit")
 end
