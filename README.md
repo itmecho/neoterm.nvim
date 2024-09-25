@@ -35,7 +35,6 @@ require('neoterm').setup({
   height = 1,          -- Height of the terminal window (percentage, ratio, or range between 0-1)
 })
 
-
 local neoterm = require('neoterm')
 
 neoterm.open()
@@ -72,13 +71,13 @@ require('neoterm').open({ position = 'right' })
 -- or
 require('neoterm').open({ position = 2 })
 ```
-![position-right](https://user-images.githubusercontent.com/8384983/126306361-353a61ad-dfa3-4a16-b9f3-0cc8a6a258f6.png)
+![position-right](https://github.com/user-attachments/assets/f60ded98-8be4-4dd6-a77b-757ece4f5d84)
 
 ## Top
 ```lua
 require('neoterm').open({ position = 'top', height = 0.8 })
 ```
-![position-top](https://user-images.githubusercontent.com/8384983/126306318-bd1c43e4-154a-4a52-9eff-d77dc683c38c.png)
+![position-top](https://github.com/user-attachments/assets/a936eda0-ca5f-4c0c-b737-7b6dc4f1bee1)
 
 ## Bottom
 ```lua
@@ -86,19 +85,19 @@ require('neoterm').open({ position = 'bottom' })
 --or
 require('neoterm').open({ position = 3 })
 ```
-![position-bottom](https://user-images.githubusercontent.com/8384983/126306383-192ea5a2-7d5b-4267-a3b7-9cee0751c44a.png)
+![position-bottom](https://github.com/user-attachments/assets/4c3f557c-44ca-4894-a75d-ef45a3943942)
 
 ## Left
 ```lua
 require('neoterm').open({ position = 'left', width = 0.7 })
 ```
-![position-left](https://user-images.githubusercontent.com/8384983/126306383-192ea5a2-7d5b-4267-a3b7-9cee0751c44a.png)
+![position-left](https://github.com/user-attachments/assets/8c6b625a-af7b-4bd1-9a7f-853db024b8b1)
 
 ## Center
 ```lua
 require('neoterm').open({ position = 'left', width = 0.6, height = 0.6 })
 ```
-![position-center](https://user-images.githubusercontent.com/8384983/126306383-192ea5a2-7d5b-4267-a3b7-9cee0751c44a.png)
+![position-center](https://github.com/user-attachments/assets/2c2411e0-04e2-41ad-829b-aeddc3f22b9f)
 
 ## Fullscreen
 ```lua
@@ -106,18 +105,18 @@ require('neoterm').open({ position = 'fullscreen' })
 -- or
 require('neoterm').open({ position = 0 })
 ```
-![position-fullscreen](https://user-images.githubusercontent.com/8384983/126306383-192ea5a2-7d5b-4267-a3b7-9cee0751c44a.png)
+![position-fullscreen](https://github.com/user-attachments/assets/9423e593-2c86-48aa-8cba-49024c38e3be)
 
 
 ## Deprecation Notice
 
 > [!WARNING]
-> The mode option is deprecated. Please use the new position option instead.
+> The `mode` option is deprecated. Please use the new `position` option instead.
 
 #### Migration Guide
 
-- vertical → right
+- `mode = vertical` → `position = right`
 
-- horizontal → bottom
+- `mode = horizontal` → `position = bottom`
 
-- fullscreen → fullscreen
+- `mode = fullscreen` → `position = fullscreen`
