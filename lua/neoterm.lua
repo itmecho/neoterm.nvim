@@ -97,6 +97,24 @@ function neoterm.setup(opts)
   config.height = height
 end
 
+local function normalize_position(position)
+  if type(position) == "string" then
+    local temp_position = {
+      ["fullscreen"] = 0,
+      ["top"] = 1,
+      ["right"] = 2,
+      ["bottom"] = 3,
+      ["left"] = 4,
+      ["center"] = 5,
+    }
+    position = temp_position[position]
+    if position == nil then
+      error("Invalid position value. Position must be one of: fullscreen, top, right, bottom, left, center.")
+    end
+  end
+  return position
+end
+
 -- Opens the terminal window. If it was opened previously, the same terminal buffer will be used
 -- Options:
 --	position - override the global config position
@@ -117,7 +135,7 @@ function neoterm.open(opts)
   if win_is_open() ~= true then
     local ui = vim.api.nvim_list_uis()[1]
 
-    local position = opts.position or config.position
+    local position = normalize_position(opts.position or config.position)
     local width = opts.width or config.width
     local height = opts.height or config.height
 
@@ -135,17 +153,6 @@ function neoterm.open(opts)
       style = "minimal",
       border = "single",
     }
-
-    if type(position) == "string" then
-      position = ({
-        ["fullscreen"] = 0,
-        ["top"] = 1,
-        ["right"] = 2,
-        ["bottom"] = 3,
-        ["left"] = 4,
-        ["center"] = 5,
-      })[position]
-    end
 
     if position == 0 then  -- fullscreen
       winopts.width = ui.width
