@@ -120,6 +120,13 @@ function neoterm.open(opts)
     local width = opts.width or config.width
     local height = opts.height or config.height
 
+    -- Set default height for top, bottom, and center positions if no height is provided
+    if not opts.height then
+      if position == "top" or position == "bottom" or position == "center" then
+        height = 0.5
+      end
+    end
+
     local winopts = {
       relative = "editor",
       style = "minimal",
