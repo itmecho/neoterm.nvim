@@ -48,7 +48,8 @@ function neoterm.setup(opts)
 
   -- Handle deprecated mode parameter
   if opts.mode then
-    vim.notify("The 'mode' parameter is deprecated. Please use 'position' instead.", vim.log.levels.WARN)
+    vim.notify("Neoterm Warning!", vim.log.levels.WARN)
+    print("The 'mode' option is deprecated. Please use 'position' instead.")
     local mode_to_position = {
       vertical = "right",
       horizontal = "bottom",
