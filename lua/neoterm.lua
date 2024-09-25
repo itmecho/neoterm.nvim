@@ -34,7 +34,7 @@ local neoterm = {}
 -- Options:
 --	clear_on_run - send the clear command before running a command with run or rerun
 --	position - set where the terminal window will be displayed
---		* full screen (0)
+--		* fullscreen (0)
 --		* top (1)
 --		* right (2)
 --		* bottom (3)
@@ -115,7 +115,7 @@ function neoterm.open(opts)
 
     if type(position) == "string" then
       position = ({
-        ["full screen"] = 0,
+        ["fullscreen"] = 0,
         ["top"] = 1,
         ["right"] = 2,
         ["bottom"] = 3,
@@ -124,7 +124,7 @@ function neoterm.open(opts)
       })[position]
     end
 
-    if position == 0 then  -- full screen
+    if position == 0 then  -- fullscreen
       winopts.width = ui.width
       winopts.height = ui.height - vim.o.cmdheight - 3
       winopts.row = 0
@@ -155,7 +155,7 @@ function neoterm.open(opts)
       winopts.row = math.floor((ui.height - winopts.height) / 2)
       winopts.col = math.floor((ui.width - winopts.width) / 2)
     else
-      error("Invalid position value. Position must be one of: full screen, top, right, bottom, left, center.")
+      error("Invalid position value. Position must be one of: fullscreen, top, right, bottom, left, center.")
     end
 
     state.last_position = position
