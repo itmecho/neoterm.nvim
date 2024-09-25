@@ -75,9 +75,9 @@ require('neoterm').open({ position = 2 })
 
 ## Top
 ```lua
-require('neoterm').open({ position = 'top', height = 0.8 })
+require('neoterm').open({ position = 'top', height = 0.6 })
 ```
-![position-top](https://github.com/user-attachments/assets/a936eda0-ca5f-4c0c-b737-7b6dc4f1bee1)
+![position-top](https://github.com/user-attachments/assets/3aba21d5-b0b2-4250-a415-cc478916c90a)
 
 ## Bottom
 ```lua
@@ -91,13 +91,13 @@ require('neoterm').open({ position = 3 })
 ```lua
 require('neoterm').open({ position = 'left', width = 0.7 })
 ```
-![position-left](https://github.com/user-attachments/assets/8c6b625a-af7b-4bd1-9a7f-853db024b8b1)
+![position-left](https://github.com/user-attachments/assets/812a7d5b-31ed-4061-9bc8-93236b0763f4)
 
 ## Center
 ```lua
 require('neoterm').open({ position = 'left', width = 0.6, height = 0.6 })
 ```
-![position-center](https://github.com/user-attachments/assets/2c2411e0-04e2-41ad-829b-aeddc3f22b9f)
+![position-center](https://github.com/user-attachments/assets/4cbbf668-c7d4-43ee-a9a6-2e5a6ba3b9fb)
 
 ## Fullscreen
 ```lua
