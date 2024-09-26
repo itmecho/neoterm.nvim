@@ -11,6 +11,8 @@
 
 <h4>Simple floating terminal plugin for neovim written in Lua.</h4>
 
+![title](https://github.com/user-attachments/assets/00d9942a-d650-42a3-b81e-cc9ba69fa11d)
+
 </div>
 
 
@@ -115,13 +117,15 @@ require('neoterm').open({ position = 'right' })
 -- or
 require('neoterm').open({ position = 2 })
 ```
-![position-right](https://github.com/user-attachments/assets/f60ded98-8be4-4dd6-a77b-757ece4f5d84)
+
+![position-right](https://github.com/user-attachments/assets/edcb4bcd-12a7-40b7-b95d-7658c835f69c)
 
 ### `top`
 ```lua
 require('neoterm').open({ position = 'top', height = 0.6 })
 ```
-![position-top](https://github.com/user-attachments/assets/3aba21d5-b0b2-4250-a415-cc478916c90a)
+
+![position-top](https://github.com/user-attachments/assets/18a984a2-4ea5-4f9c-a123-4631ac25bcb2)
 
 ### `bottom`
 ```lua
@@ -129,21 +133,17 @@ require('neoterm').open({ position = 'bottom' })
 --or
 require('neoterm').open({ position = 3 })
 ```
-![position-bottom](https://github.com/user-attachments/assets/4c3f557c-44ca-4894-a75d-ef45a3943942)
+
+![position-bottom](https://github.com/user-attachments/assets/9a40db31-22b2-4e6d-9213-744e0de73498)
+
 
 ### `left`
 ```lua
-require('neoterm').open({ position = 'left', width = 0.7 })
-```
-![position-left](https://github.com/user-attachments/assets/812a7d5b-31ed-4061-9bc8-93236b0763f4)
-
-### `fullscreen`
-```lua
-require('neoterm').open({ position = 'fullscreen' })
+require('neoterm').open({ position = 'left', width = 0.3 })
 -- or
-require('neoterm').open({ position = 0 })
+require('neoterm').open({ position = 4 })
 ```
-![position-fullscreen](https://github.com/user-attachments/assets/9423e593-2c86-48aa-8cba-49024c38e3be)
+![position-left](https://github.com/user-attachments/assets/9d0de2ad-af8d-4c3f-a4a8-908dc907aa14)
 
 ## Contributors
 
