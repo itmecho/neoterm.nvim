@@ -8,10 +8,10 @@ local state = {
 
 local config = {
   clear_on_run = true,
-  position = "right",  -- Default position is right
+  position = "right", -- Default position is right
   noinsert = false,
-  width = 0.5,  -- Default width is 50%
-  height = 1,  -- Default height is 100%
+  width = 0.5, -- Default width is 50%
+  height = 1, -- Default height is 100%
 }
 
 -- Returns a bool to show if the neoterm window exists
@@ -141,7 +141,7 @@ function neoterm.open(opts)
 
     -- If no height is provided and position is 'top', 'bottom', or 'center', set default height
     if config.height == 1 then
-      if position == 'top' or position == 'bottom' or position == 'center' then
+      if position == "top" or position == "bottom" or position == "center" then
         height = 0.5
       else
         height = config.height
@@ -154,32 +154,32 @@ function neoterm.open(opts)
       border = "single",
     }
 
-    if position == 0 then  -- fullscreen
+    if position == 0 then -- fullscreen
       winopts.width = ui.width
       winopts.height = ui.height - vim.o.cmdheight - 3
       winopts.row = 0
       winopts.col = 0
-    elseif position == 1 then  -- top
+    elseif position == 1 then -- top
       winopts.width = ui.width
       winopts.height = math.floor(ui.height * height) - vim.o.cmdheight - 3
       winopts.row = 0
       winopts.col = 0
-    elseif position == 2 then  -- right
+    elseif position == 2 then -- right
       winopts.width = math.floor(ui.width * width)
       winopts.height = ui.height - vim.o.cmdheight - 3
       winopts.row = 0
       winopts.col = ui.width - winopts.width
-    elseif position == 3 then  -- bottom
+    elseif position == 3 then -- bottom
       winopts.width = ui.width
       winopts.height = math.floor(ui.height * height) - vim.o.cmdheight - 3
       winopts.row = ui.height - winopts.height - vim.o.cmdheight - 3
       winopts.col = 0
-    elseif position == 4 then  -- left
+    elseif position == 4 then -- left
       winopts.width = math.floor(ui.width * width)
       winopts.height = ui.height - vim.o.cmdheight - 3
       winopts.row = 0
       winopts.col = 0
-    elseif position == 5 then  -- center
+    elseif position == 5 then -- center
       winopts.width = math.floor(ui.width * width)
       winopts.height = math.floor(ui.height * height) - vim.o.cmdheight - 3
       winopts.row = math.floor((ui.height - winopts.height) / 2)
