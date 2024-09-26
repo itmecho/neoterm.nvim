@@ -44,6 +44,8 @@ local neoterm = {}
 --	width - set the width of the terminal window (percentage, ratio, or range between 0-1)
 --	height - set the height of the terminal window (percentage, ratio, or range between 0-1)
 function neoterm.setup(opts)
+  vim.notify("neoterm: we have renamed the master branch to main. Please remove and re-add the plugin.", vim.log.levels.WARN)
+
   opts = opts or {}
 
   -- Handle deprecated mode parameter

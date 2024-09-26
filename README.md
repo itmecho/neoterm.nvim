@@ -1,5 +1,7 @@
 # Neoterm
 
+**WARNING: This is the old default branch and no longer receives updates. Please use the default `main` branch instead.**
+
 Simple neovim terminal plugin written in lua. Terminal runs in a floating window in a configurable position.
 
 Requires `neovim` 0.7+ for access to the lua autocmd API.
