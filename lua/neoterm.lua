@@ -141,7 +141,7 @@ function neoterm.open(opts)
 
     -- If no height is provided and position is 'top', 'bottom', or 'center', set default height
     if config.height == 1 then
-      if position == "top" or position == "bottom" or position == "center" then
+      if position == 1 or position == 3 or position == 5 then
         height = 0.5
       else
         height = config.height
