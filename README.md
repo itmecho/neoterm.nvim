@@ -28,17 +28,18 @@ The following functions are available on the neoterm module. They map directly t
 ```lua
 -- Setup global config
 require('neoterm').setup({
-	clear_on_run = true, -- run clear command before user specified commands
-	mode = 'vertical',   -- vertical/horizontal/fullscreen
-	noinsert = false     -- disable entering insert mode when opening the neoterm window
+  clear_on_run = true, -- Run clear command before user specified commands
+  position = 'right',  -- Position of the terminal window: fullscreen (0), top (1), right (2), bottom (3), left (4), center (5) (string or integer value)
+  noinsert = false,    -- Disable entering insert mode when opening the neoterm window
+  width = 0.5,         -- Width of the terminal window (percentage, ratio, or range between 0-1)
+  height = 1,          -- Height of the terminal window (percentage, ratio, or range between 0-1)
 })
-
 
 local neoterm = require('neoterm')
 
 neoterm.open()
 -- Override global config on a specific open call
-neoterm.open({ mode = 'horizontal', noinsert = true})
+neoterm.open({ position = 'bottom', noinsert = true, width = 0.7, height = 0.3 })
 neoterm.close()
 neoterm.toggle()
 neoterm.run('ls')
@@ -62,22 +63,60 @@ tnoremap <leader>tx <cmd>NeotermExit<CR>
 
 # Screenshots
 
-## Vertical (default)
+## Right (default)
 ```lua
 require('neoterm').open()
 -- or
-require('neoterm').open({mode ='vertical'})
+require('neoterm').open({ position = 'right' })
+-- or
+require('neoterm').open({ position = 2 })
 ```
-![image](https://user-images.githubusercontent.com/8384983/126306361-353a61ad-dfa3-4a16-b9f3-0cc8a6a258f6.png)
+![position-right](https://github.com/user-attachments/assets/f60ded98-8be4-4dd6-a77b-757ece4f5d84)
 
-## Horizontal
+## Top
 ```lua
-require('neoterm').open({mode ='horizontal'})
+require('neoterm').open({ position = 'top', height = 0.6 })
 ```
-![image](https://user-images.githubusercontent.com/8384983/126306318-bd1c43e4-154a-4a52-9eff-d77dc683c38c.png)
+![position-top](https://github.com/user-attachments/assets/3aba21d5-b0b2-4250-a415-cc478916c90a)
+
+## Bottom
+```lua
+require('neoterm').open({ position = 'bottom' })
+--or
+require('neoterm').open({ position = 3 })
+```
+![position-bottom](https://github.com/user-attachments/assets/4c3f557c-44ca-4894-a75d-ef45a3943942)
+
+## Left
+```lua
+require('neoterm').open({ position = 'left', width = 0.7 })
+```
+![position-left](https://github.com/user-attachments/assets/812a7d5b-31ed-4061-9bc8-93236b0763f4)
+
+## Center
+```lua
+require('neoterm').open({ position = 'left', width = 0.6, height = 0.6 })
+```
+![position-center](https://github.com/user-attachments/assets/4cbbf668-c7d4-43ee-a9a6-2e5a6ba3b9fb)
 
 ## Fullscreen
 ```lua
-require('neoterm').open({mode ='fullscreen'})
+require('neoterm').open({ position = 'fullscreen' })
+-- or
+require('neoterm').open({ position = 0 })
 ```
-![image](https://user-images.githubusercontent.com/8384983/126306383-192ea5a2-7d5b-4267-a3b7-9cee0751c44a.png)
+![position-fullscreen](https://github.com/user-attachments/assets/9423e593-2c86-48aa-8cba-49024c38e3be)
+
+
+## Deprecation Notice
+
+> [!WARNING]
+> The `mode` option is deprecated. Please use the new `position` option instead.
+
+#### Migration Guide
+
+- `mode = vertical` → `position = right`
+
+- `mode = horizontal` → `position = bottom`
+
+- `mode = fullscreen` → `position = fullscreen`

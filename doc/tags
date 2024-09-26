@@ -9,5 +9,6 @@ NeotermWinClose	neoterm.txt	/*NeotermWinClose*
 NeotermWinOpen	neoterm.txt	/*NeotermWinOpen*
 neoterm	neoterm.txt	/*neoterm*
 neoterm-commands	neoterm.txt	/*neoterm-commands*
+neoterm-configuration	neoterm.txt	/*neoterm-configuration*
 neoterm-events	neoterm.txt	/*neoterm-events*
 neoterm.txt	neoterm.txt	/*neoterm.txt*

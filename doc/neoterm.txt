@@ -1,9 +1,10 @@
-*neoterm.txt*                                         Last change: 2022 June 14
+*neoterm.txt*                                         Last change: 2024 September 25
 ==============================================================================
 CONTENTS                                                              *neoterm*
 
   1. Commands ....... |neoterm-commands|
   2. Events ......... |neoterm-events|
+  3. Configuration .. |neoterm-configuration|
 
 ==============================================================================
 Section 1: Commands                                          *neoterm-commands*
@@ -43,14 +44,58 @@ NeotermWinOpen
 
                                                               *NeotermWinClose*
 NeotermWinClose
-    Fired when the neoterm window is opened.
+    Fired when the neoterm window is closed.
 
                                                              *NeotermTermEnter*
 NeotermTermEnter
-    Fired when the entering Terminal Mode in the Neoterm buffer.
+    Fired when entering Terminal Mode in the Neoterm buffer.
 
                                                              *NeotermTermLeave*
 NeotermTermLeave
-    Fired when the leaving Terminal Mode in the Neoterm buffer.
+    Fired when leaving Terminal Mode in the Neoterm buffer.
 
+==============================================================================
+Section 3: Configuration                                  *neoterm-configuration*
+
+The neoterm plugin can be configured using the `setup` function. The following
+options are available:
+
+                                                                 *neoterm-setup*
+:lua require('neoterm').setup({options})
+
+    Configure the neoterm plugin with the given options.
+
+    Options:
+
+    clear_on_run (boolean)
+        Run the clear command before user specified commands. Default: true.
+
+    position (string)
+        Position of the terminal window. Possible values:
+        - 'fullscreen'
+        - 'top'
+        - 'right' (default)
+        - 'bottom'
+        - 'left'
+        - 'center'
+
+    noinsert (boolean)
+        Disable entering insert mode when opening the neoterm window. Default: false.
+
+    width (number or string)
+        Width of the terminal window. Can be a number between 0 and 1 or a percentage string (e.g., '50%'). Default: 0.5.
+
+    height (number or string)
+        Height of the terminal window. Can be a number between 0 and 1 or a percentage string (e.g., '50%'). Default: 1.
+
+    Deprecation Notice:
+    The `mode` option is deprecated. Please use the `position` option instead.
+    The `mode` option will be removed in future versions.
+
+    Migration Guide:
+    - 'vertical' → 'right'
+    - 'horizontal' → 'bottom'
+    - 'fullscreen' → 'fullscreen'
+
+==============================================================================
 vim:textwidth=78:tabstop=4:expandtab:shiftwidth=4:filetype=help:
