@@ -95,6 +95,10 @@ function neoterm.setup(opts)
 
   config.width = width
   config.height = height
+
+  if vim.g.neoterm_bufh ~= nil and vim.api.nvim_buf_is_valid(vim.g.neoterm_bufh) then
+    state.bufh = vim.g.neoterm_bufh
+  end
 end
 
 local function normalize_position(position)
@@ -127,6 +131,7 @@ function neoterm.open(opts)
   local buf_created = false
   if buf_is_valid() == false then
     state.bufh = vim.api.nvim_create_buf(false, true)
+    vim.g.neoterm_bufh = state.bufh
     buf_created = true
   end
 
