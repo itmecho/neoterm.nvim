@@ -115,6 +115,13 @@ local function normalize_position(position)
   return position
 end
 
+local NEOVIDE_PADDING = 2
+local DEFAULT_PADDING = 0
+
+local function is_neovide()
+  return vim.g.neovide ~= nil
+end
+
 -- Opens the terminal window. If it was opened previously, the same terminal buffer will be used
 -- Options:
 --	position - override the global config position
@@ -154,7 +161,7 @@ function neoterm.open(opts)
       border = "single",
     }
 
-    local width_padding = 2 -- Add some padding so that terminal fits within the visible area (neovide)
+    local width_padding = is_neovide() and NEOVIDE_PADDING or DEFAULT_PADDING
 
     if position == 0 then -- fullscreen
       winopts.width = ui.width - width_padding
