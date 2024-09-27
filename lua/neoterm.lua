@@ -119,6 +119,13 @@ local function normalize_position(position)
   return position
 end
 
+local NEOVIDE_PADDING = 2
+local DEFAULT_PADDING = 0
+
+local function is_neovide()
+  return vim.g.neovide ~= nil
+end
+
 -- Opens the terminal window. If it was opened previously, the same terminal buffer will be used
 -- Options:
 --	position - override the global config position
@@ -159,33 +166,35 @@ function neoterm.open(opts)
       border = "single",
     }
 
+    local width_padding = is_neovide() and NEOVIDE_PADDING or DEFAULT_PADDING
+
     if position == 0 then -- fullscreen
-      winopts.width = ui.width
+      winopts.width = ui.width - width_padding
       winopts.height = ui.height - vim.o.cmdheight - 3
       winopts.row = 0
       winopts.col = 0
     elseif position == 1 then -- top
-      winopts.width = ui.width
+      winopts.width = ui.width - width_padding
       winopts.height = math.floor(ui.height * height) - vim.o.cmdheight - 3
       winopts.row = 0
       winopts.col = 0
     elseif position == 2 then -- right
-      winopts.width = math.floor(ui.width * width)
+      winopts.width = math.floor(ui.width * width) - width_padding
       winopts.height = ui.height - vim.o.cmdheight - 3
       winopts.row = 0
       winopts.col = ui.width - winopts.width
     elseif position == 3 then -- bottom
-      winopts.width = ui.width
+      winopts.width = ui.width - width_padding
       winopts.height = math.floor(ui.height * height) - vim.o.cmdheight - 3
       winopts.row = ui.height - winopts.height - vim.o.cmdheight - 3
       winopts.col = 0
     elseif position == 4 then -- left
-      winopts.width = math.floor(ui.width * width)
+      winopts.width = math.floor(ui.width * width) - width_padding
       winopts.height = ui.height - vim.o.cmdheight - 3
       winopts.row = 0
       winopts.col = 0
     elseif position == 5 then -- center
-      winopts.width = math.floor(ui.width * width)
+      winopts.width = math.floor(ui.width * width) - width_padding
       winopts.height = math.floor(ui.height * height) - vim.o.cmdheight - 3
       winopts.row = math.floor((ui.height - winopts.height) / 2)
       winopts.col = math.floor((ui.width - winopts.width) / 2)
