@@ -95,6 +95,10 @@ function neoterm.setup(opts)
 
   config.width = width
   config.height = height
+
+  if vim.g.neoterm_bufh ~= nil and vim.api.nvim_buf_is_valid(vim.g.neoterm_bufh) then
+    state.bufh = vim.g.neoterm_bufh
+  end
 end
 
 local function normalize_position(position)
@@ -127,6 +131,7 @@ function neoterm.open(opts)
   local buf_created = false
   if buf_is_valid() == false then
     state.bufh = vim.api.nvim_create_buf(false, true)
+    vim.g.neoterm_bufh = state.bufh
     buf_created = true
   end
 
@@ -141,7 +146,7 @@ function neoterm.open(opts)
 
     -- If no height is provided and position is 'top', 'bottom', or 'center', set default height
     if config.height == 1 then
-      if position == "top" or position == "bottom" or position == "center" then
+      if position == 1 or position == 3 or position == 5 then
         height = 0.5
       else
         height = config.height
