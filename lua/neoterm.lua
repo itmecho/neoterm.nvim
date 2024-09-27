@@ -208,7 +208,7 @@ function neoterm.open(opts)
     if buf_created then
       vim.cmd([[term]])
       state.chan = vim.b.terminal_job_id
-      vim.api.nvim_buf_set_option(state.bufh, "buflisted", false)
+      vim.api.nvim_set_option_value("buflisted", false, { buf = state.bufh })
     end
   end
 
